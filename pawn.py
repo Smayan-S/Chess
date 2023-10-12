@@ -12,61 +12,32 @@ class Pawn(ChessPiece):
 
 
     def get_legal_moves(self, board):
-        """Get's all possible legal moves"""
-
         legal_moves = []
-        if self.color == 'white':
-            
-            #checks whether the square ahead of it is empty
-            if board[self.position[0] - 1][self.position[1]] is None:
-                #checks whether two squares ahead is empty or not
-                if board[self.position[0] - 2][self.position[1]] is None:
-                    #if pawn has not moved, it can jump two squares for it's first move
-                    if self.has_moved is False:
-                        legal_moves.append((self.position[0] - 2, self.position[1]))
-                legal_moves.append((self.position[0] - 1, self.position[1]))
+        current_row, current_column = self.position
+        single_movement = False
 
-            #checks whether diagonal captures are within the limits of the board
-            if (self.position[1] - 1) >= 0 and (self.position[1] + 1) <=7:
-                top_left_white = board[self.position[0] - 1][self.position[1] - 1]
-                top_right_white = board[self.position[0] - 1][self.position[1] + 1]
-                #checks whether the left diagonal square has a piece for white
-                if top_left_white is not None:
-                    #makes sure the piece is not from the same color
-                    if top_left_white.color is not self.color:
-                        legal_moves.append((self.position[0] - 1, self.position[1] - 1))
-                #checks whether the right diagonal square has a piece for white
-                if top_right_white is not None:
-                    #makes sure the piece is not from the same color
-                    if top_right_white.color is not self.color:
-                        legal_moves.append((self.position[0] - 1, self.position[1] + 1))
+        #for single movement
+        next_row = current_row + self.move_direction
+        if 0 <= next_row < 8 and board[next_row][current_column] is None:
+            single_movement = True
+            legal_moves.append((next_row, current_column))
 
-        elif self.color == 'black':
+        #for double movement
+        if single_movement:
+            if not self.has_moved:
+                next_row = current_row + 2 * self.move_direction
+                if board[next_row][current_column] is None:
+                    legal_moves.append((next_row, current_column))
 
-            #checks whether the square ahead of it is empty
-            if board[self.position[0] + 1][self.position[1]] is None:
-                #checks whether two squares ahead is empty or not
-                if board[self.position[0] + 2][self.position[1]] is None:
-                    #if pawn has not moved, it can jump two squares for it's first move
-                    if self.has_moved is False:
-                        legal_moves.append((self.position[0] + 2, self.position[1]))
-                legal_moves.append((self.position[0] + 1, self.position[1]))
-
-
-            #checks whether diagonal captures are within the limits of the board
-            if (self.position[1] - 1) >= 0 and (self.position[1] + 1) <=7:
-                top_right_black = board[self.position[0] + 1][self.position[1] - 1]
-                top_left_black = board[self.position[0] + 1][self.position[1] + 1]
-                #checks whether the right diagonal square has a piece for white
-                if top_right_black is not None:
-                    #makes sure the piece is not from the same color
-                    if top_right_black.color is not self.color:
-                        legal_moves.append((self.position[0] + 1, self.position[1] - 1))
-                #checks whether the left diagonal square has a piece for white
-                if top_left_black is not None:
-                    #makes sure the piece is not from the same color
-                    if top_left_black.color is not self.color:
-                        legal_moves.append((self.position[0] + 1, self.position[1] + 1))
+        #for captures
+        column_offset = [-1, 1]
+        for offset in column_offset:
+            next_row = current_row + self.move_direction
+            next_column = current_column + offset
+            if 0 <= next_column < 8 and 0 <= next_column < 8:
+                target_piece = board[next_row][next_column]
+                if target_piece is not None and target_piece.color is not self.color:
+                    legal_moves.append((next_row, next_column))
 
         return legal_moves
 
