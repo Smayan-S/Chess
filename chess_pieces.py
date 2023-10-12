@@ -6,7 +6,6 @@ class ChessPiece:
     def __init__(self, color, position, piece_id):
         self.color = color
         self.position = position
-        self.has_moved = False
         self.piece_id = piece_id
 
 
