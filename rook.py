@@ -55,4 +55,3 @@ class Rook(ChessPiece):
         self.has_moved = True
         self.move(target_square)
         return 0
-                        

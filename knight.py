@@ -5,8 +5,8 @@ class Knight(ChessPiece):
     """Class for knight"""
 
 
-    def __init__(self, color, position, piece_id):
-        super().__init__(color, position, piece_id)
+    # def __init__(self, color, position, piece_id):
+    #     super().__init__(color, position, piece_id)
 
 
     def get_legal_moves(self, board):
