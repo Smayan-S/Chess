@@ -10,7 +10,7 @@ class Knight(ChessPiece):
 
 
     def get_legal_moves(self, board):
-        """Get's all legal moves for the night"""
+        """Get's all legal moves for the knight"""
 
         legal_moves = []
 
