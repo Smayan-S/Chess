@@ -15,68 +15,30 @@ class Rook(ChessPiece):
 
         legal_moves = []
 
-        current_row, current_column = self.position
-        up = down = left = right = True
-        scale = 1
+        #all possible rook directions
+        rook_move_directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-        while True:
-
-            if up:
-                up_offset = -1 * scale
-                if current_row + up_offset >= 0:
-                    target_piece = board[current_row + up_offset][current_column]
-                    if target_piece is None:
-                        legal_moves.append((current_row + up_offset, current_column))
-                    else:
-                        up = False
+        #iterating through the rook directions
+        for row_offset, column_offset in rook_move_directions:
+            row, column = self.position
+            while True:
+                row += row_offset
+                column += column_offset
+                #checks whether the target square exists on the board
+                if 0 <= row < 8 and 0 <= column < 8:
+                    target_piece = board[row][column]
+                    #checks whether target is empty or not
+                    if target_piece is not None:
+                        #makes sure the piece we capture is the opponent's piece
                         if target_piece.color is not self.color:
-                            legal_moves.append((current_row + up_offset, current_column))
-                else:
-                    up = False
-
-            if down:
-                down_offset = 1 * scale
-                if current_row + down_offset < 8:
-                    target_piece = board[current_row + down_offset][current_column]
-                    if target_piece is None:
-                        legal_moves.append((current_row + down_offset, current_column))
+                            legal_moves.append((row, column))
+                        #since the position is not emtpy, we must stop looking for further moves
+                        break
+                    #adds move if target square is empty
                     else:
-                        down = False
-                        if target_piece.color is not self.color:
-                            legal_moves.append((current_row + down_offset, current_column))
+                        legal_moves.append((row, column))
                 else:
-                    down = False
-
-            if left:
-                left_offset = -1 * scale
-                if current_column + left_offset >= 0:
-                    target_piece = board[current_row][current_column + left_offset]
-                    if target_piece is None:
-                        legal_moves.append((current_row, current_column + left_offset))
-                    else:
-                        left = False
-                        if target_piece.color is not self.color:
-                            legal_moves.append((current_row + left_offset, current_column))
-                else:
-                    left = False
-
-            if right:
-                right_offset = 1 * scale
-                if current_column + right_offset < 8:
-                    target_piece = board[current_row][current_column + right_offset]
-                    if target_piece is None:
-                        legal_moves.append((current_row, current_column + right_offset))
-                    else:
-                        right = False
-                        if target_piece.color is not self.color:
-                            legal_moves.append((current_row, current_column + right_offset))
-                else:
-                    right = False
-
-            if up is down is left is right is False:
-                break
-
-            scale += 1
+                    break
         return legal_moves
 
 
@@ -90,6 +52,7 @@ class Rook(ChessPiece):
         legal_moves = self.get_legal_moves(board)
         if target_square not in legal_moves:
             return -1
+        self.has_moved = True
         self.move(target_square)
         return 0
                         
